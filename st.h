@@ -81,6 +81,7 @@ void die(const char *, ...);
 void redraw(void);
 void draw(void);
 
+void externalpipe(const Arg *);
 void printscreen(const Arg *);
 void printsel(const Arg *);
 void sendbreak(const Arg *);
@@ -114,6 +115,7 @@ char *xstrdup(const char *);
 int xgetcolor(int x, unsigned char *r, unsigned char *g, unsigned char *b);
 
 /* config.h globals */
+extern char *externalpipe_sigusr1[];
 extern char *utmp;
 extern char *scroll;
 extern char *stty_args;
