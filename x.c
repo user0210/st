@@ -73,6 +73,7 @@ static void zoom(const Arg *);
 static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
 static void ttysend(const Arg *);
+static void reload(const Arg *);
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -2068,18 +2069,20 @@ resource_load(XrmDatabase db, char *name, enum resource_type rtype, void *dst)
 void
 config_init(void)
 {
+	Display* k = XOpenDisplay(NULL);
 	char *resm;
 	XrmDatabase db;
 	ResourcePref *p;
 
 	XrmInitialize();
-	resm = XResourceManagerString(xw.dpy);
+	resm = XResourceManagerString(k);
 	if (!resm)
 		return;
 
 	db = XrmGetStringDatabase(resm);
 	for (p = resources; p < resources + LEN(resources); p++)
 		resource_load(db, p->name, p->type, p->dst);
+	XCloseDisplay(k);
 }
 
 void
@@ -2093,6 +2096,21 @@ usage(void)
 	    " [-n name] [-o file]\n"
 	    "          [-T title] [-t title] [-w windowid] -l line"
 	    " [stty_args ...]\n", argv0, argv0);
+}
+
+void
+reload(const Arg *dummy)
+{
+	config_init();
+	xloadcols();
+	xclearwin();
+	redraw();
+}
+
+void
+xreload(int sig)
+{
+	reload(NULL);
 }
 
 int
@@ -2160,6 +2178,7 @@ run:
 		die("Can't open display\n");
 
 	config_init();
+	signal(SIGUSR2, xreload);
 	cols = MAX(cols, 1);
 	rows = MAX(rows, 1);
 	tnew(cols, rows);
