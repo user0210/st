@@ -66,6 +66,7 @@ typedef struct {
 
 /* function definitions used in config.h */
 static void brightcol(const Arg *);
+static void changealpha(const Arg *);
 static void clipcopy(const Arg *);
 static void clippaste(const Arg *);
 static void numlock(const Arg *);
@@ -303,6 +304,20 @@ invertedcolor(Color *clr) {
 	rc.alpha = clr->color.alpha;
 	XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &rc, &inverted);
 	return inverted;
+}
+
+void
+changealpha(const Arg *arg)
+{
+    if((alpha > 0 && arg->f < 0) || (alpha < 1 && arg->f > 0))
+        alpha += arg->f;
+    if(alpha < 0)
+        alpha = 0;
+    if(alpha > 1)
+        alpha = 1;
+
+    xloadcols();
+    redraw();
 }
 
 void
