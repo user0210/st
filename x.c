@@ -868,9 +868,19 @@ xloadcols(void)
 	/* set alpha value of bg color */
 	if (opt_alpha)
 		alpha = strtof(opt_alpha, NULL);
-	dc.col[defaultbg].color.alpha = (unsigned short)(0xffff * alpha);
-	dc.col[defaultbg].pixel &= 0x00FFFFFF;
-	dc.col[defaultbg].pixel |= (unsigned char)(0xff * alpha) << 24;
+
+	Color *c = &dc.col[defaultbg];
+	c->color.red   *= alpha;
+	c->color.green *= alpha;
+	c->color.blue  *= alpha;
+	c->color.alpha = (unsigned short)(0xffff * alpha);
+
+	c->pixel = \
+		(unsigned char)(0xff * alpha) << 24 \
+		+ ((unsigned char)(c->color.red / 0xffff.0p0 * 0xff) << 16) \
+		+ ((unsigned char)(c->color.green / 0xffff.0p0 * 0xff) << 8) \
+		+ (unsigned char)(c->color.blue / 0xffff.0p0 * 0xff);
+
 	loaded = 1;
 }
 
