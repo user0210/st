@@ -7,6 +7,12 @@ char *externalpipe_sigusr1[] = {"/bin/sh", "-c", "externalpipe_buffer.sh st_stri
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
 static char *font = "monospace:pixelsize=16:antialias=true:autohint=true";
+/* Spare fonts */
+static char *font2[] = {
+    "JoyPixels:pixelsize=16:antialias=true:autohint=true",	// color emoji
+    "Symbola:pixelsize=16:antialias=true:autohint=true",	// non-color emoji
+};
+
 static int borderpx = 0;
 
 /*
