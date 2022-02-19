@@ -115,6 +115,14 @@ static const char *colorname[] = {
 	"cyan",
 	"white",
 
+	/* bas16-colors 17-21 */
+	"gray10",
+	"gray20",
+	"gray30",
+	"gray40",
+	"gray50",
+	"gray60",
+
 	[255] = 0,
 
 	/* more colors can be added after 255 to use with DefaultXX */
@@ -194,6 +202,15 @@ ResourcePref resources[] = {
 		{ "st.foreground",   STRING,  &colorname[258] },
 		{ "st.background",   STRING,  &colorname[259] },
 		{ "st.cursorColor",  STRING,  &colorname[256] },
+		{ "color16",      STRING,  &colorname[16] },
+		{ "color17",      STRING,  &colorname[17] },
+		{ "color18",      STRING,  &colorname[18] },
+		{ "color19",      STRING,  &colorname[19] },
+		{ "color20",      STRING,  &colorname[20] },
+		{ "color21",      STRING,  &colorname[21] },
+		{ "foreground",   STRING,  &colorname[258] },
+		{ "background",   STRING,  &colorname[259] },
+		{ "cursorColor",  STRING,  &colorname[256] },
 		{ "termname",     STRING,  &termname },
 		{ "shell",        STRING,  &shell },
 		{ "minlatency",   INTEGER, &minlatency },
