@@ -911,6 +911,23 @@ xsetcolorname(int x, const char *name)
 	XftColorFree(xw.dpy, xw.vis, xw.cmap, &dc.col[x]);
 	dc.col[x] = ncolor;
 
+	/* set alpha value of bg color */
+	if (x == defaultbg) {
+		if (opt_alpha)
+			alpha = strtof(opt_alpha, NULL);
+
+		Color *c = &dc.col[defaultbg];
+		c->color.red   *= alpha;
+		c->color.green *= alpha;
+		c->color.blue  *= alpha;
+		c->color.alpha = (unsigned short)(0xffff * alpha);
+
+		c->pixel = \
+			(unsigned char)(0xff * alpha) << 24 \
+			+ ((unsigned char)(c->color.red / 0xffff.0p0 * 0xff) << 16) \
+			+ ((unsigned char)(c->color.green / 0xffff.0p0 * 0xff) << 8) \
+			+ (unsigned char)(c->color.blue / 0xffff.0p0 * 0xff);
+	}
 	return 0;
 }
 
