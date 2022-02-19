@@ -3,7 +3,7 @@
 st \- simple terminal
 .SH SYNOPSIS
 .B st
-.RB [ \-aiv ]
+.RB [ \-aiuv ]
 .RB [ \-c
 .IR class ]
 .RB [ \-f
@@ -27,7 +27,7 @@ st \- simple terminal
 .RI [ arguments ...]]
 .PP
 .B st
-.RB [ \-aiv ]
+.RB [ \-aiuv ]
 .RB [ \-c
 .IR class ]
 .RB [ \-f
@@ -68,6 +68,9 @@ defines the X11 geometry string.
 The form is [=][<cols>{xX}<rows>][{+-}<xoffset>{+-}<yoffset>]. See
 .BR XParseGeometry (3)
 for further details.
+.TP
+.B \-u
+enables focus-events by default
 .TP
 .B \-i
 will fixate the position given with the -g option.
