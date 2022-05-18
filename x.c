@@ -65,6 +65,7 @@ typedef struct {
 #define XK_SWITCH_MOD (1<<13|1<<14)
 
 /* function definitions used in config.h */
+static void brightcol(const Arg *);
 static void clipcopy(const Arg *);
 static void clippaste(const Arg *);
 static void numlock(const Arg *);
@@ -271,6 +272,14 @@ static char *opt_name  = NULL;
 static char *opt_title = NULL;
 
 static uint buttons; /* bit field of pressed buttons */
+
+void
+brightcol(const Arg *dummy)
+{
+	brightcolors = !brightcolors;
+	xloadcols();
+	redraw();
+}
 
 void
 clipcopy(const Arg *dummy)
@@ -1540,6 +1549,9 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	} else {
 		bg = &dc.col[base.bg];
 	}
+
+	if (brightcolors == 1 && BETWEEN(base.fg, 1, 6))
+		fg = &dc.col[base.fg + 8];
 
 	if (IS_SET(MODE_REVERSE)) {
 		if (fg == &dc.col[defaultfg]) {

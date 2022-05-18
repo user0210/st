@@ -1,4 +1,7 @@
 char *externalpipe_sigusr1[] = {"/bin/sh", "-c", "externalpipe_buffer.sh st_strings_read"};
+
+static int brightcolors = 1;
+
 /* See LICENSE file for copyright and license details. */
 
 /*
@@ -274,10 +277,10 @@ static Shortcut shortcuts[] = {
 	{ TERMMOD,              XK_asterisk,    zoom,           {.f = +1} },
 	{ TERMMOD,              XK_underscore,  zoom,           {.f = -1} },
 	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
+	{ TERMMOD,              XK_Y,           brightcol,      {.i =  0} },
 	{ TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
 	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
-	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
-	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
+	{ TERMMOD,              XK_Insert,      selpaste,       {.i =  0} },
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
 	{ TERMMOD,              XK_R,           reload,        {.i =  0} },
 };
