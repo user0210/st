@@ -2,6 +2,7 @@ char *externalpipe_sigusr1[] = {"/bin/sh", "-c", "externalpipe_buffer.sh st_stri
 
 static int brightcolors = 1;
 static int font_shadow = 0;
+float fontalpha = 0.5;
 
 /* See LICENSE file for copyright and license details. */
 
@@ -39,6 +40,10 @@ char *vtiden = "\033[?6c";
 /* Kerning / character bounding-box multipliers */
 static float cwscale = 1.0;
 static float chscale = 1.0;
+
+/* Character rendering offsets in pixels */
+static short cxoffset = 0;
+static short cyoffset = 0;
 
 /*
  * word delimiter string

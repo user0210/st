@@ -1470,8 +1470,8 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
 		if (glyphidx) {
 			specs[numspecs].font = font->match;
 			specs[numspecs].glyph = glyphidx;
-			specs[numspecs].x = (short)xp;
-			specs[numspecs].y = (short)yp;
+			specs[numspecs].x = (short)xp + cxoffset;
+			specs[numspecs].y = (short)yp + cyoffset;
 			xp += runewidth;
 			numspecs++;
 			continue;
@@ -1719,12 +1719,12 @@ xdrawglyphfontspecs(XftGlyphFontSpec *specs, Glyph base, int len, int x, int y, 
 		if (base.mode & ATTR_BOXDRAW) {
 			drawboxes(winx, winy, width / len, win.ch, fg, bg, specs, len);
 		} else {
-			if (font_shadow && colfg.red != colbg.red && colfg.green != colbg.green && colfg.blue != colbg.blue) {
+			if (font_shadow) {
 				XRenderColor shadowfg;
 				shadowfg.red = 0;
 				shadowfg.green = 0;
 				shadowfg.blue = 0;
-				shadowfg.alpha = 0x7777;
+				shadowfg.alpha = 0xffff * fontalpha;
 				if (XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &shadowfg, &truefg)) {
 					int t;
 					for (t = 0; t < len; t++) {
