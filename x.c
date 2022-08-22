@@ -61,6 +61,7 @@ static void zoomreset(const Arg *);
 static void ttysend(const Arg *);
 static void reload(const Arg *);
 static void invert(const Arg *);
+static void fontshadow(const Arg *);
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -88,7 +89,7 @@ typedef struct {
 
 static inline ushort sixd_to_16bit(int);
 static int xmakeglyphfontspecs(XftGlyphFontSpec *, const Glyph *, int, int, int);
-static void xdrawglyphfontspecs(const XftGlyphFontSpec *, Glyph, int, int, int, int);
+static void xdrawglyphfontspecs(XftGlyphFontSpec *, Glyph, int, int, int, int);
 static void xdrawglyph(Glyph, int, int);
 static void xclear(int, int, int, int);
 static int xgeommasktogravity(int);
@@ -293,6 +294,14 @@ delete_image(ImageList *im)
 		XFreePixmap(xw.dpy, (Drawable)im->pixmap);
 	free(im->pixels);
 	free(im);
+}
+
+void
+fontshadow(const Arg *dummy)
+{
+	font_shadow = !font_shadow;
+	xclearwin();
+	redraw();
 }
 
 void
@@ -1590,7 +1599,7 @@ static int getSlope (int x, int iPoint, int waveWidth)
 }
 
 void
-xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, int y, int dmode)
+xdrawglyphfontspecs(XftGlyphFontSpec *specs, Glyph base, int len, int x, int y, int dmode)
 {
 	int charlen = len * ((base.mode & ATTR_WIDE) ? 2 : 1);
 	int winx = borderpx + x * win.cw, winy = borderpx + y * win.ch,
@@ -1613,8 +1622,8 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 		colfg.red = TRUERED(base.fg);
 		colfg.green = TRUEGREEN(base.fg);
 		colfg.blue = TRUEBLUE(base.fg);
-		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &truefg);
 		fg = &truefg;
+		XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &truefg);
 	} else {
 		fg = &dc.col[base.fg];
 	}
@@ -1708,8 +1717,29 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 	
 	if (dmode & DRAW_FG) {
 		if (base.mode & ATTR_BOXDRAW) {
-		drawboxes(winx, winy, width / len, win.ch, fg, bg, specs, len);
+			drawboxes(winx, winy, width / len, win.ch, fg, bg, specs, len);
 		} else {
+			if (font_shadow && colfg.red != colbg.red && colfg.green != colbg.green && colfg.blue != colbg.blue) {
+				XRenderColor shadowfg;
+				shadowfg.red = 0;
+				shadowfg.green = 0;
+				shadowfg.blue = 0;
+				shadowfg.alpha = 0x7777;
+				if (XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &shadowfg, &truefg)) {
+					int t;
+					for (t = 0; t < len; t++) {
+						specs[t].x++;
+						specs[t].y++;
+					}
+					XftDrawGlyphFontSpec(xw.draw, &truefg, specs, len);
+					for (t = 0; t < len; t++) {
+						specs[t].x--;
+						specs[t].y--;
+					}
+					XftColorFree(xw.dpy, xw.vis, xw.cmap, &truefg);
+					XftColorAllocValue(xw.dpy, xw.vis, xw.cmap, &colfg, &truefg);
+				}
+			}
 			/* Render the glyphs. */
 			XftDrawGlyphFontSpec(xw.draw, fg, specs, len);
 		}
